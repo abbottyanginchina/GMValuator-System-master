@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+
+    <title>Document</title>
+</head>
+
+<style>
+    /* 添加样式以创建上传区域 */
+    .upload-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 50px;
+    }
+
+    .matched-container {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        /* margin-top: 50px; */
+    }
+
+    .image-container {
+        border-radius: 5%;
+        border: 3px solid #575b66;
+    }
+
+    #selected-image {
+        width: 200px;
+        height: 200px;
+        border-radius: 5%;
+    }
+
+    .matched-image {
+        width: 200px;
+        height: 200px;
+        border-radius: 5%;
+    }
+</style>
+
+<body>
+    <div class="upload-container">
+        <h3>Please upload a generated image</h3>
+        <div class="image-container" onclick="handleImageClick()">
+            <img id="selected-image" src="../static/img/upload.png">
+        </div>
+    </div>
+
+    <div class="upload-container">
+        <h3>The most contributed Training Images</h3>
+        <div class="matched-container">
+            <div class="image-container">
+                <img class="matched-image" id="matched-image-0" src="../static/img/upload.png">
+            </div>
+
+            <div class="image-container">
+                <img class="matched-image" id="matched-image-1" src="../static/img/upload.png">
+            </div>
+            
+            <div class="image-container">
+                <img class="matched-image" id="matched-image-2" src="../static/img/upload.png">
+            </div>
+    
+            <div class="image-container">
+                <img class="matched-image" id="matched-image-3" src="../static/img/upload.png">
+            </div>
+    
+        </div>
+    </div>
+
+    
+
+</body>
+
+<script>
+    function handleImageClick() {
+        var uploadInput = document.createElement('input');
+        uploadInput.type = 'file';
+        uploadInput.accept = 'image/*';
+
+        uploadInput.addEventListener('change', function (event) {
+            var file = event.target.files[0];
+
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    var selectedImage = document.getElementById('selected-image');
+                    selectedImage.src = e.target.result;
+                    sendImage(uploadInput.files[0]);
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        uploadInput.click();
+    }
+
+    function sendImage(file) {
+        var formData = new FormData();
+        formData.append("img", file);
+        $.ajax({
+            url: 'http://127.0.0.1:5000/match',
+            type: 'POST',
+            data: formData, // 上传formdata封装的数据包
+            dataType: 'JSON',
+            cache: false, // 不缓存
+            processData: false, // jQuery不要去处理发送的数据
+            contentType: false, // jQuery不要去设置Content-Type请求头
+            success: function (response) {
+                var imagesData = response.images;
+
+                for (var i = 0; i < imagesData.length; i++) {
+                    var matchedImage = document.getElementById('matched-image-'+i);
+                    // var img = new Image();
+                    // img.src = 'data:image/jpeg;base64,' + imagesData[i];
+                    matchedImage.src = 'data:image/jpeg;base64,' + imagesData[i];
+                }
+            }
+        });
+    }
+
+
+    
+</script>
+
+</html>
