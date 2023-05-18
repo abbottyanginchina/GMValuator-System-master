@@ -44,6 +44,10 @@
         height: 200px;
         border-radius: 5%;
     }
+
+    h4{
+        text-align: center;
+    }
 </style>
 
 <body>
@@ -57,20 +61,32 @@
     <div class="upload-container">
         <h3>The most contributed Training Images</h3>
         <div class="matched-container">
-            <div class="image-container">
-                <img class="matched-image" id="matched-image-0" src="../static/img/upload.png">
-            </div>
-
-            <div class="image-container">
-                <img class="matched-image" id="matched-image-1" src="../static/img/upload.png">
+            <div>
+                <div class="image-container">
+                    <img class="matched-image" id="matched-image-0" src="../static/img/upload.png">
+                </div>
+                <h4 id="value-0">Value: 0.0</h4>
             </div>
             
-            <div class="image-container">
-                <img class="matched-image" id="matched-image-2" src="../static/img/upload.png">
+            <div>
+                <div class="image-container">
+                    <img class="matched-image" id="matched-image-1" src="../static/img/upload.png">
+                </div>
+                <h4 id="value-1">Value: 0.0</h4>
             </div>
-    
-            <div class="image-container">
-                <img class="matched-image" id="matched-image-3" src="../static/img/upload.png">
+
+            <div>
+                <div class="image-container">
+                    <img class="matched-image" id="matched-image-2" src="../static/img/upload.png">
+                </div>
+                <h4 id="value-2">Value: 0.0</h4>
+            </div>
+
+            <div>
+                <div class="image-container">
+                    <img class="matched-image" id="matched-image-3" src="../static/img/upload.png">
+                </div>
+                <h4 id="value-3">Value: 0.0</h4>
             </div>
     
         </div>
@@ -117,12 +133,17 @@
             success: function (response) {
                 var imagesData = response.images;
 
-                for (var i = 0; i < imagesData.length; i++) {
+                for (var i = 0; i < 4; i++) {
                     var matchedImage = document.getElementById('matched-image-'+i);
-                    // var img = new Image();
-                    // img.src = 'data:image/jpeg;base64,' + imagesData[i];
                     matchedImage.src = 'data:image/jpeg;base64,' + imagesData[i];
                 }
+
+                // value of each matched image
+                for (var i = 4; i<8; i++) {
+                    var value = document.getElementById("value-"+(i-4))
+                    value.innerHTML = "Value: " + imagesData[i].toFixed(4)
+                }
+
             }
         });
     }
